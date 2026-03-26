@@ -1,0 +1,56 @@
+# ==========================================
+# RFM Stage 2: Unified Pipeline 配置文件
+# ==========================================
+
+# 1. 数据集配置 (Data Configuration)
+data:
+  # 训练数据项目路径 (支持多个项目)
+  train_dirs:
+    - "D:/YihengZhu/jbgs-lma/proj-phase1/eclipse-models/1c/water_flooding"
+  train_names:
+    - "BYEPD93"
+
+  # 特征字段
+  dynamic_fields: ["PRESSURE", "SWAT"]
+  static_fields: ["PORO", "PERMX"]
+
+  # 滑动窗口设置
+  nt_width: 10          # Transformer 一次前向看到的历史时间步长度
+  stride: 1             # 窗口滑动的步长
+
+  # 物理网格参数 (需与 Stage 1 对齐)
+  n_theta: 26
+  n_R: 10
+  model_nz: 40
+  maxR: 1000.0
+  total_z_depth: 50.0
+
+# 2. 训练超参数 (Training Hyperparameters)
+training:
+  batch_size: 2
+  max_epochs: 100
+  learning_rate: 0.0001
+  nums_loading_projects: 2 # 内存中并发缓存的项目数量
+
+# 3. 预训练权重路径 (Stage 1 Checkpoints) - 非常关键！
+stage1_checkpoints:
+  vq_vae_path: "checkpoints/vq_vae/best_model.ckpt"   # 您的 VQ-VAE 权重路径
+  geo_vae_path: "checkpoints/geo_vae/best_model.ckpt" # 您的 Geo-VAE 权重路径
+
+# 4. Pipeline 模型核心参数 (Model Architecture)
+model:
+  # Transformer 架构参数
+  d_model: 512
+  n_heads: 8
+  num_layers: 6
+  dropout: 0.1
+
+  # 词表大小 (需与 VQ-VAE 密码本大小完全一致)
+  vocab_size: 1025      # 例如 1024 + 1(PAD/Mask token)
+
+  # 动态特征维度 (井控指令的维度)
+  dynamic_feature_dim: 12
+
+  # 模式开关
+  freeze_vqvae: true    # 训练 Stage 2 时，是否冻结 VQ-VAE
+  freeze_poro_vae: true # 训练 Stage 2 时，是否冻结 Geo-VAE
