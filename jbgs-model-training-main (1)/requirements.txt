@@ -1,0 +1,20 @@
+# ==========================================
+# Reservoir Foundation Model (RFM) Dependencies
+# ==========================================
+
+# 1. 核心深度学习框架 (建议安装支持 CUDA 11.8/12.1 的版本)
+torch>=2.0.0          # 必须 >= 2.0，因为用到了 F.scaled_dot_product_attention (FlashAttention)
+torchvision>=0.15.0   # 伴随 torch 安装
+
+# 2. 工业级训练控制台
+pytorch-lightning>=2.0.0
+tensorboard>=2.12.0   # 用于日志监控 (Loss, 学习率)
+
+# 3. 科学计算与数据处理
+numpy>=1.21.0
+scipy>=1.9.0          # 极坐标采样 polar_utils.py 中依赖 cKDTree
+
+# 4. 配置管理与辅助工具
+PyYAML>=6.0           # 基础 YAML 解析
+omegaconf>=2.3.0      # 极其强大的层级配置管理 (推荐)
+tqdm>=4.65.0          # 进度条

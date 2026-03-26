@@ -1,0 +1,37 @@
+# ==========================================
+# 动态多场 VQ-VAE 训练配置文件 
+# ==========================================
+# 动态场配置 (自动拼接通道)
+field_names: ["PRESSURE", "SWAT"]
+
+# --- 数据集配置 ---
+project_dirs: ["../", "../"]   # 真实的项目绝对或相对路径
+project_names: ["BYEPD93", "BYEPD94"]
+train_val_split: 0.9           # Train / Val 空间井位切分比例
+
+# --- 训练硬件与资源 ---
+batch_size: 4
+nums_loading_projects: 2       # 内存中并发发牌的项目数
+epochs: 500
+seed: 42
+
+# --- 空间网格拓扑约束 ---
+model_nz: 40
+n_theta: 26
+n_R: 10
+max_hd_points: 20
+
+# --- VQ-VAE 模型容量与超参 ---
+model:
+  in_channels: 2          # 必须与 field_names 长度一致
+  hidden_dim: 32
+  latent_dim: 64
+  num_embeddings: 512     # Codebook 密码本大小
+  commitment_cost: 0.25
+  num_res_blocks: 2
+  num_attn_heads: 8
+  compress_shape: [2, 2, 2]
+  kl_weight: 1.0e-5
+  hd_weight: 10.0
+  decay_rate: 0.2
+  lr: 2.0e-4              # VQ-VAE 学习率通常略大于传统 VAE

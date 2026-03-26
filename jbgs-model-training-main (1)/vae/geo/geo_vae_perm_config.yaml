@@ -1,0 +1,31 @@
+# ==========================================
+# 渗透率特征 VAE 训练配置文件 (Permeability)
+# ==========================================
+field_name: "PERMX"
+
+# --- 数据集配置 ---
+project_dirs: ["../", "../"]   # 请输入真实的项目绝对或相对路径
+project_names: ["BYEPD93", "BYEPD94"]
+train_val_split: 0.9                         # Train / Val 切分比例 (9:1)
+
+# --- 训练硬件与资源 ---
+batch_size: 4
+nums_loading_projects: 2  # 内存持水量 (根据 RAM 调节)
+epochs: 500
+
+# --- 空间网格拓扑约束 ---
+model_nz: 10
+n_theta: 20
+n_R: 10
+max_hd_points: 10
+
+# --- VAE 模型容量与惩罚项超参 ---
+model:
+  hidden_dim: 64
+  latent_channels: 8      # 渗透率信息熵极大，建议保持 8 (孔隙度可降为 4)
+  num_res_blocks: 2       # 网络深度：调节网络非线性提取能力 (推荐 1~3)
+  compress_shape: [2, 2, 2]
+  kl_weight: 1.0e-5       # KL 散度约束项
+  hd_weight: 10.0         # 井点硬数据保真权重
+  decay_rate: 0.2         # W(R) 径向物理空间衰减系数
+  lr: 1.0e-4              # 学习率

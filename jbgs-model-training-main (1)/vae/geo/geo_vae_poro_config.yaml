@@ -1,0 +1,32 @@
+# ==========================================
+# 孔隙度特征 VAE 训练配置文件 (Porosity)
+# ==========================================
+field_name: "PORO"
+
+# --- 数据集配置 ---
+project_dirs: ["../BYEPD93", "../BYEPD94"]   # 请输入真实的项目绝对或相对路径
+project_names: ["BYEPD93", "BYEPD94"]
+train_val_split: 0.9                         # Train / Val 切分比例 (9:1)
+
+# --- 训练硬件与步长 ---
+batch_size: 4
+nums_loading_projects: 2  # 内存持水量 (建议根据剩余 RAM 调节)
+seed: 42
+epochs: 500
+
+# --- 空间网格拓扑约束 ---
+model_nz: 40
+n_theta: 26
+n_R: 10
+max_hd_points: 20
+
+# --- VAE 模型容量与超参 ---
+model:
+  hidden_dim: 64
+  latent_channels: 4      # 孔隙度可降为 4
+  num_res_blocks: 1       # 网络深度调节器：容量不够时加深 (1, 2, 4)
+  compress_shape: [2, 2, 2]
+  kl_weight: 1.0e-5       # KL 散度约束项
+  hd_weight: 10.0         # 井点硬数据保真权重
+  decay_rate: 0.2         # W(R) 径向物理空间衰减系数
+  lr: 1.0e-4              # 学习率
